@@ -1,0 +1,113 @@
+html,
+body {
+	padding: .2rem;
+	margin: 0;
+	font-size: 18px;
+	min-width: 1400px;
+}
+
+#app {
+	padding: .6rem;
+}
+
+p {
+	font-size: 3rem;
+	text-align: center;
+	font-weight: bolder;
+}
+
+#app span.type {
+	display: block;
+	text-align: center;
+	font-family: "lucida console";
+}
+
+.btnContainer{
+	height: 1.5rem;
+	line-height: 1.5rem;
+	text-align: center;
+	margin: 1.2rem auto;
+}
+
+.opreations{
+	display: block;
+}
+
+div.opreations p{
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+.process{
+	width: -webkit-fit-content;
+	text-align: left;
+	margin: .3rem auto;
+	font-size: 1.2rem;
+}
+
+#pid,#name,#arrive,#service,#tp{
+	display: inline-block;
+	border: none;
+	border-bottom: black 1px solid;
+	font-size: 1.2rem;
+	-webkit-appearance: none;
+	outline: none;
+	width: 4rem;
+	margin: 0 .3rem;
+	text-align: center;
+}
+
+#name{
+	width: 6rem;
+}
+
+#testCase{
+	width: .8rem;
+	height: .8rem;
+	margin-left: 2rem;
+	margin-right: .3rem;
+}
+
+.showResult{
+	padding: .2rem;
+	margin: 2rem;
+	text-align: center;
+}
+
+.showResult .row:nth-child(2n+1) .resContainer .unit{
+	background-color: rgba(0, 0, 0, .05);
+}
+
+.showResult .row .resContainer{
+	height: 3rem;
+	font-size: 1.2rem;
+	font-family: "宋体";
+	line-height: 3rem;
+}
+
+.unit{
+	display: inline-block;
+	min-width: 7rem;
+	padding: 0 1.5rem;
+	text-align: center;
+	border: 1px gray solid;
+}
+
+.header .unit{
+	height: 2rem;
+	line-height: 2rem;
+	font-size: 1rem;
+	font-weight: bolder;
+}
+
+.tips{
+	margin-top: 3rem;
+	text-indent: 8em;
+}
+
+.tips span{
+	display: block;
+	height: 1.6rem;
+	line-height: 1.6rem;
+	text-align: left;
+}

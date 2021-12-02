@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>进程调度算法</title>
+		<script src="js/v3.2.8/vue.global.prod.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+	<body>
+		<div id="app">
+			<p>进程调度算法模拟</p>
+			<span class="type">{{type_display}}</span>
+			<hr>
+				<div class="btnContainer">
+					<button type="button"
+						@click="doFcfs(this.testCase_name, this.testCase_arriveTime, this.testCase_serviceTime,this.testCase_pid)">先来先服务</button>
+					|
+					<button type="button"
+						@click="doTimePiece(this.testCase_name, this.testCase_arriveTime, this.testCase_serviceTime,this.testCase_pid)">时间片轮转</button>
+					|
+					<button type="button">动态优先级</button>
+					<input type="checkbox" name="testCase" id="testCase" v-model="isShowTestCase"/>
+					<label for="testCase">显示测试用例设置</label>
+				</div>
+				<div class="opreations" v-if="isShowTestCase">
+					<p>参与该算法的进程信息设置</p>
+					<div class="process" v-for="(pid,index) in testCase_pid">
+						<span>第 {{index+1}} 个进程 | </span>
+						<span> 进程标识 ( Pid ) </span>
+						<span><input type="number" name="pid" id="pid" v-model="pid" /></span>
+						<span> 进程名称 </span>
+						<span><input type="text" name="name" id="name" v-model="testCase_name[index]" /></span>
+						<span> 进程到达时间 </span>
+						<span><input type="number" name="arrive" id="arrive"
+								v-model="testCase_arriveTime[index]" /></span>
+						<span> 进程服务时间 </span>
+						<span><input type="number" name="service" id="service"
+								v-model="testCase_serviceTime[index]" /></span>
+					</div>
+					<div class="process">
+						<span>时间片长度 </span>
+						<span><input type="number" name="tp" id="tp" v-model="time_piece" /></span>
+					</div>
+					<div class="btnContainer">
+						<button type="button" @click="resetTestCase">重置为原有的测试用例</button>
+						|
+						<button type="button" @click="insertTestCase">新增测试用例(进程)</button>
+					</div>
+					<div class="tips">
+						<span><b>进程信息设置提示</b></span>
+						<span>1.在默认情况下，系统会以默认定义好的测试用例运行本实验的调度算法。</span>
+						<span>2.修改进程设置极有可能会使算法得到一个新的结果。所以在修改信息后，请再次点击对应调度算法的按钮，以得到新的结果。</span>
+						<span>3.所有动作在产生时都会在控制台生成输出，使用浏览器自带的控制台可以更加清楚的了解发生了什么。一般的，控制台用 F12 调出。</span>
+						<span>4.测试用例的数据数值应当控制在一定的范围之内（0~25512），在数据不合理时不应讨论该算法是否能够计算出结果，即使它能够。</span>
+						<span>5.在本实验页中，优先级默认以小为先，即值越小，优先级越高。</span>
+					</div>
+				</div>
+			<hr>
+			<div class="showResult">
+				<div class="row" v-for="(item,index) in mainObj.res">
+					<span v-show="index == 0">
+						<span class="header" v-show="this.type_display == 'FirstComeFirstServer(FCFS) / 先来先服务调度'">
+							<span class="unit">进程名称</span>
+							<span class="unit">到达时间</span>
+							<span class="unit">服务时间</span>
+							<span class="unit">开始时间</span>
+							<span class="unit">完成时间</span>
+							<span class="unit">周转时间</span>
+							<span class="unit">带权周转时间</span>
+						</span>
+						<span class="header" v-show="this.type_display == 'TimePiece(RR) / 时间片轮转调度'">
+							<span class="unit">进程名称</span>
+							<span class="unit">开始时间</span>
+							<span class="unit">运行时间</span>
+							<span class="unit">剩余服务时间</span>
+							<span class="unit">结束时间</span>
+						</span>
+					</span>
+					<div class="resContainer">
+						<span class="unit" v-for="inner in item">{{inner}}</span>
+					</div>
+				</div>
+				<div class="tips">
+					<span v-for="(item,index) in mainObj.tips">
+						<b v-if="index == 0">{{item}}</b>
+						<span v-else>{{item}}</span>
+					</span>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="js/myDefine.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/myVue.js" type="text/javascript" charset="utf-8"></script>
+</html>
