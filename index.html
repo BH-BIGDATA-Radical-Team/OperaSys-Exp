@@ -7,56 +7,75 @@
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 	</head>
 	<body>
+		<div class="github">
+			<a title="去 github star本项目" target="_blank" href="https://github.com/BH-BIGDATA-Radical-Team/OperaSys-Exp">
+				<svg ondragstart="javascript:return false" t="1638587135644" class="icon" viewBox="0 0 1024 1024"
+					version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2437" width="128" height="128">
+					<path
+						d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9 23.5 23.2 38.1 55.4 38.1 91v112.5c0.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z"
+						p-id="2438" fill="#2c2c2c"></path>
+				</svg>
+			</a>
+		</div>
 		<div id="app">
 			<p>进程调度算法模拟</p>
 			<span class="type">{{type_display}}</span>
 			<hr>
+			<div class="btnContainer">
+				<button type="button"
+					@click="doFcfs(this.testCase_name, this.testCase_arriveTime, this.testCase_serviceTime,this.testCase_pid)">先来先服务</button>
+				|
+				<button type="button"
+					@click="doTimePiece(this.testCase_name, this.testCase_arriveTime, this.testCase_serviceTime,this.testCase_pid)">时间片轮转</button>
+				|
+				<button type="button"
+					@click="doDynamicPriority(this.testCase_name,this.testCase_arriveTime,this.testCase_serviceTime,this.testCase_priority,this.testCase_pid)">动态优先级</button>
+				<input type="checkbox" name="testCase" id="testCase" v-model="isShowTestCase" />
+				<label for="testCase">显示测试用例设置</label><span>&nbsp;&nbsp;</span>
+				<input type="checkbox" id="checktip" v-model="isShowTips" />
+				<label for="checktip">提示可见性</label>
+			</div>
+			<div class="opreations" v-if="isShowTestCase">
+				<p>参与该算法的进程信息设置</p>
+				<div class="process" v-for="(pid,index) in testCase_pid">
+					<span>第 {{index+1}} 个进程 | </span>
+					<span> 进程标识 ( Pid ) </span>
+					<span><input type="number" name="pid" id="pid" v-model="pid" /></span>
+					<span> 进程名称 </span>
+					<span><input type="text" name="name" id="name" v-model="testCase_name[index]" /></span>
+					<span> 进程到达时间 </span>
+					<span><input type="number" name="arrive" id="arrive" v-model="testCase_arriveTime[index]" /></span>
+					<span> 进程服务时间 </span>
+					<span><input type="number" name="service" id="service"
+							v-model="testCase_serviceTime[index]" /></span>
+					<span> 进程优先级 </span>
+					<span><input type="number" name="priority" id="priority"
+							v-model="testCase_priority[index]" /></span>
+				</div>
+				<div class="process">
+					<span>时间片长度 </span>
+					<span><input type="number" name="tp" id="tp" v-model="time_piece" /></span>
+					<span>时间间隔长度 </span>
+					<span><input type="number" name="tr" id="tr" v-model="time_rest" /></span>
+				</div>
 				<div class="btnContainer">
-					<button type="button"
-						@click="doFcfs(this.testCase_name, this.testCase_arriveTime, this.testCase_serviceTime,this.testCase_pid)">先来先服务</button>
+					<button type="button" @click="resetTestCase">重置为原有的测试用例</button>
 					|
-					<button type="button"
-						@click="doTimePiece(this.testCase_name, this.testCase_arriveTime, this.testCase_serviceTime,this.testCase_pid)">时间片轮转</button>
-					|
-					<button type="button">动态优先级</button>
-					<input type="checkbox" name="testCase" id="testCase" v-model="isShowTestCase"/>
-					<label for="testCase">显示测试用例设置</label>
+					<button type="button" @click="insertTestCase">新增测试用例(进程)</button>
 				</div>
-				<div class="opreations" v-if="isShowTestCase">
-					<p>参与该算法的进程信息设置</p>
-					<div class="process" v-for="(pid,index) in testCase_pid">
-						<span>第 {{index+1}} 个进程 | </span>
-						<span> 进程标识 ( Pid ) </span>
-						<span><input type="number" name="pid" id="pid" v-model="pid" /></span>
-						<span> 进程名称 </span>
-						<span><input type="text" name="name" id="name" v-model="testCase_name[index]" /></span>
-						<span> 进程到达时间 </span>
-						<span><input type="number" name="arrive" id="arrive"
-								v-model="testCase_arriveTime[index]" /></span>
-						<span> 进程服务时间 </span>
-						<span><input type="number" name="service" id="service"
-								v-model="testCase_serviceTime[index]" /></span>
-					</div>
-					<div class="process">
-						<span>时间片长度 </span>
-						<span><input type="number" name="tp" id="tp" v-model="time_piece" /></span>
-					</div>
-					<div class="btnContainer">
-						<button type="button" @click="resetTestCase">重置为原有的测试用例</button>
-						|
-						<button type="button" @click="insertTestCase">新增测试用例(进程)</button>
-					</div>
-					<div class="tips">
-						<span><b>进程信息设置提示</b></span>
-						<span>1.在默认情况下，系统会以默认定义好的测试用例运行本实验的调度算法。</span>
-						<span>2.修改进程设置极有可能会使算法得到一个新的结果。所以在修改信息后，请再次点击对应调度算法的按钮，以得到新的结果。</span>
-						<span>3.所有动作在产生时都会在控制台生成输出，使用浏览器自带的控制台可以更加清楚的了解发生了什么。一般的，控制台用 F12 调出。</span>
-						<span>4.测试用例的数据数值应当控制在一定的范围之内（0~25512），在数据不合理时不应讨论该算法是否能够计算出结果，即使它能够。</span>
-						<span>5.在本实验页中，优先级默认以小为先，即值越小，优先级越高。</span>
-					</div>
+				<div class="tips" v-show="this.isShowTips">
+					<span><b>进程信息设置提示</b></span>
+					<span>1.在默认情况下，系统会以定义好的测试用例运行本实验的调度算法。</span>
+					<span>2.修改进程设置极有可能会使算法得到一个新的结果。所以在修改信息后，请再次点击对应调度算法的按钮，以得到新的结果。</span>
+					<span>3.所有动作在产生时都会在控制台生成输出，使用浏览器自带的控制台可以更加清楚的了解发生了什么。一般的，控制台用 F12 调出。</span>
+					<span>4.测试用例的数据数值应当控制在一定的范围之内（0~25512），在数据不合理时不应讨论该算法是否能够计算出结果，即使它能够。</span>
+					<span>5.在本实验页中，优先级默认以小为先，即值越小，优先级越高。</span>
+					<span>6.测试用例设置中的时间片长度和时间间隔长度分别对应时间片轮转调度和动态优先级调度。</span>
 				</div>
+			</div>
 			<hr>
 			<div class="showResult">
+				<p v-show="this.mainObj.res">算法进程信息</p>
 				<div class="row" v-for="(item,index) in mainObj.res">
 					<span v-show="index == 0">
 						<span class="header" v-show="this.type_display == 'FirstComeFirstServer(FCFS) / 先来先服务调度'">
@@ -75,19 +94,70 @@
 							<span class="unit">剩余服务时间</span>
 							<span class="unit">结束时间</span>
 						</span>
+						<span class="header" v-show="this.type_display == 'DynamicPriority / 动态优先级调度'">
+							<span class="unit">进程名称</span>
+							<span class="unit">运行时间</span>
+							<span class="unit">剩余服务时间</span>
+							<span class="unit">优先级</span>
+						</span>
 					</span>
 					<div class="resContainer">
 						<span class="unit" v-for="inner in item">{{inner}}</span>
 					</div>
 				</div>
 				<div class="tips">
-					<span v-for="(item,index) in mainObj.tips">
-						<b v-if="index == 0">{{item}}</b>
+					<span v-for="(item,index) in mainObj.tips" v-show="this.isShowTips">
+						<b v-if="index == 0">
+							{{item}}
+						</b>
 						<span v-else>{{item}}</span>
 					</span>
 				</div>
 			</div>
+			<div class="forReal">
+				<p>{{mainObj.res?'模拟仿真':'要进行模拟仿真需要先进行一次任意算法'}}</p>
+				<div class="realContainer" v-show="mainObj.res">
+					<div class="process">
+						<span>当前时间帧</span>
+						<span><input type="number" name="rpt" id="rpt" v-model="rp_time" /></span>
+					</div>
+					<div class="realProcess" v-for="(item,index) in display_rp.pid">
+						<div class="rpid">
+							<span>Process ID {{item}}</span>
+						</div>
+						<div class="rpname">
+							<span>Process Name {{display_rp.name[index]}}</span>
+						</div>
+						<div class="rpstatus">
+							<span>Process Status {{handleRPStatus(index)}}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="colorscheme" @click="toggleColorScheme">
+				<svg v-show="!isDarkScheme" t="1638542095553" class="icon" viewBox="0 0 1024 1024" version="1.1"
+					xmlns="http://www.w3.org/2000/svg" p-id="1484" width="48" height="48">
+					<path
+						d="M512 341c-94.4 0-171 76.6-171 171s76.6 171 171 171 171-76.6 171-171-76.6-171-171-171z m0 277.9c-59 0-106.9-47.9-106.9-106.9 0-59 47.9-106.9 106.9-106.9 59 0 106.9 47.8 106.9 106.9 0 59-47.9 106.9-106.9 106.9zM512 725.8c-17.7 0-32.1 14.4-32.1 32.1V822c0 17.7 14.4 32.1 32.1 32.1s32.1-14.4 32.1-32.1v-64.1c0-17.8-14.4-32.1-32.1-32.1zM512 298.3c17.7 0 32.1-14.4 32.1-32.1v-64.1c0-17.7-14.4-32.1-32.1-32.1s-32.1 14.4-32.1 32.1v64.1c0 17.7 14.4 32.1 32.1 32.1zM315.5 360.9c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-45.3-45.3c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l45.3 45.3zM708.5 663.1c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l45.3 45.3c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-45.3-45.3zM298.3 512c0-17.7-14.4-32.1-32.1-32.1h-64.1c-17.7 0-32.1 14.4-32.1 32.1s14.4 32.1 32.1 32.1h64.1c17.7 0 32.1-14.4 32.1-32.1zM821.9 479.9h-64.1c-17.7 0-32.1 14.4-32.1 32.1s14.4 32.1 32.1 32.1h64.1c17.7 0 32.1-14.4 32.1-32.1s-14.4-32.1-32.1-32.1zM315.5 663.1l-45.3 45.3c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l45.3-45.3c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0zM708.5 360.9l45.3-45.3c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-45.3 45.3c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"
+						p-id="1485" fill="#bcbcbc"></path>
+				</svg>
+				<svg v-show="isDarkScheme" t="1638541614065" class="icon" viewBox="0 0 1024 1024" version="1.1"
+					xmlns="http://www.w3.org/2000/svg" p-id="1841" width="48" height="48">
+					<path
+						d="M572.4 229.9c8.8-8.8 21.9-11.7 33.6-7.5 115.1 41.7 197.5 152 197.5 281.6 0 165.4-134.1 299.5-299.5 299.5-129.6 0-239.9-82.3-281.6-197.5-4.2-11.7-1.3-24.8 7.5-33.6s21.9-11.7 33.6-7.5c25 9 51.9 14 80.1 14 129.9 0 235.3-105.3 235.3-235.3 0-28.2-4.9-55.2-14-80.1-4.2-11.7-1.3-24.8 7.5-33.6z m69.1 83.2c1 10 1.5 20.2 1.5 30.5C643 509 508.9 643 343.6 643c-10.3 0-20.5-0.5-30.5-1.5 42.7 59.3 112.4 97.8 191 97.8C634 739.3 739.3 634 739.3 504c0-78.5-38.5-148.2-97.8-190.9z"
+						p-id="1842" fill="#2c2c2c"></path>
+				</svg>
+			</div>
 		</div>
+		<footer>
+			<span><strong>© <a target="_blank" href="https://github.com/BH-BIGDATA-Radical-Team/OperaSys-Exp"
+						title="BH_Ridcal_Team">Github</a> |
+					<a target="_blank"
+						href="https://github.com/BH-BIGDATA-Radical-Team/OperaSys-Exp/blob/main/LICENSE">MIT
+						Lincense</a></strong></span><br>
+			<span>制作于中国吉林，北华大学</span><br>
+			<span>Made in Beihua University, Jilin Province in China</span>
+		</footer>
 	</body>
 	<script src="js/myDefine.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/myVue.js" type="text/javascript" charset="utf-8"></script>
