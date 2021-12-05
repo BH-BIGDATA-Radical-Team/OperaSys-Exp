@@ -18,10 +18,15 @@ const App = {
 				tips: [],
 			},
 			rp: {},
-			rp_time: 2,
-			display_rp:{
-				pid:[],
-				name:[],
+			rp_time: 3,
+			display_rp: {
+				pid: [],
+				name: [],
+				status: [],
+				connect: {
+					next: null,
+					last: null
+				}
 			},
 		}
 	},
@@ -116,8 +121,6 @@ const App = {
 			for (let i = 0; i < arr_t_service.length; i++)
 				if (arr_t_service[i] == undefined || arr_t_service[i] == null || arr_t_service[i] == "") flag =
 					false
-
-			console.log(pid.length, arr_name, arr_t_arrive, arr_t_service);
 
 			if (flag) {
 				this.rp = this.InitFcfs(arr_name, arr_t_arrive, arr_t_service, pid)
@@ -229,23 +232,64 @@ const App = {
 				)
 			}
 		},
-		initRP(){
-			for(let i=0;i<this.rp.finishArray.length;i++){
+		initRP() {
+			this.display_rp.pid = []
+			this.display_rp.name = []
+			this.display_rp.status = []
+			this.display_rp.connect.next = null
+			this.display_rp.connect.last = null
+			for (let i = 0; i < this.rp.finishArray.length; i++) {
 				this.display_rp.pid.push(this.rp.finishArray[i].pid)
 				this.display_rp.name.push(this.rp.finishArray[i].name)
+				this.display_rp.status.push(this.handleRPStatus(i))
+
 			}
 		},
-		handleRPStatus(index){
+		handleRPStatus(index) {
 			let start = this.rp.finishArray[index].time[0],
-				end = this.rp.finishArray[index].time[1]
-				
-			
-			
-			if(this.rp_time < start) return 'wait'
-			else if(this.rp_time == start) return 'start'
-			else if(this.rp_time > start && this.rp_time < end) return 'running'
-			else if(this.rp_time == end) return 'ending'
-			else return 'ended'
+				end = this.rp.finishArray[index].time[1],
+				res = this.rp.resultArray
+
+
+			if (this.mainObj.type == "FirstComeFirstServer(FCFS) / 先来先服务调度") {
+				if (this.rp_time < start) return 'wait'
+				else if (this.rp_time == start) return 'start'
+				else if (this.rp_time > start && this.rp_time < end) {
+					this.display_rp.connect.next = res[index == res.length - 1 ? 0 : index + 1][0]
+					this.display_rp.connect.last = res[index == 0 ? 0 : index - 1][0]
+					return 'running'
+				} else if (this.rp_time == end) return 'ending'
+				else return 'ended'
+			} else if (this.mainObj.type == "TimePiece(RR) / 时间片轮转调度") {
+				for (let x = 0; x < res.length; x++) {
+					if (res[x][0] == this.display_rp.name[index]) {
+						if (this.rp_time < res[x][1]) return 'wait'
+						else if (this.rp_time == res[x][1]) return 'start'
+						else if (this.rp_time > res[x][1] && this.rp_time < res[x][4]) {
+							this.display_rp.connect.next = res[x == res.length - 1 ? 0 : x + 1][0]
+							this.display_rp.connect.last = res[x == 0 ? 0 : x - 1][0]
+							return 'running'
+						} else if (this.rp_time == res[x][4]) return 'ending'
+						else if (this.rp_time > res[x][4] && this.rp_time < res[res.length - 1][4]);
+						else return 'ended';
+					}
+				}
+			} else if (this.mainObj.type == "DynamicPriority / 动态优先级调度") {
+				for (let x = 0; x < res.length; x++) {
+					if (res[x][0] == this.display_rp.name[index]) {
+						if (this.rp_time < this.rp.t_start[x]) return 'wait'
+						else if (this.rp_time == this.rp.t_start[x]) return 'start'
+						else if (this.rp_time > this.rp.t_start[x] && this.rp_time < this.rp.t_finish[x]) {
+							this.display_rp.connect.next = res[x == res.length - 1 ? 0 : x + 1][0]
+							this.display_rp.connect.last = res[x == 0 ? 0 : x - 1][0]
+							return 'running'
+						} else if (this.rp_time == this.rp.t_finish[x]) return 'ending'
+						else if (this.rp_time > this.rp.t_finish[x] && this.rp_time < this.rp.t_finish[this.rp
+								.t_finish.length - 1]);
+						else return 'ended';
+					}
+				}
+			}
 		}
 	}
 };

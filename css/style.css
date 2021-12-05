@@ -179,13 +179,12 @@ div.opreations p{
 }
 
 .tips{
-	margin-top: 3rem;
+	margin: 3rem 0;
 	text-indent: 8em;
 }
 
 .tips span{
 	display: block;
-	height: 1.6rem;
 	line-height: 1.6rem;
 	text-align: left;
 }
@@ -194,9 +193,72 @@ div.opreations p{
 	font-size: 1.6rem;
 }
 
+.realContainer{
+	width: 80%;
+	margin: 2rem auto;
+}
+
+.realProcess{
+	height: 4.5rem;
+	margin: 1rem;
+	padding: .5rem 1rem;
+	border: var(--font-color) 1px solid;
+	font-family: "lucida console";
+}
+
+.realProcess .pre{
+	display: inline-block;
+	width: 8rem;
+	height: 1.5rem;
+	line-height: 1.5rem;
+	font-size: .85rem;
+}
+
+.realProcess .data{
+	font-weight: bold;
+}
+
+.realProcess .rpid,
+.realProcess .rpname,
+.realProcess .rpstatus{
+	width: 14rem;
+	padding: 0 .25rem;
+}
+
+.realProcess .head{
+	float: left;
+	border-right: var(--font-color) 1px solid;
+}
+
+.realProcess .connect{
+	float: left;
+	height: 3rem;
+	margin: 0 1rem;
+	padding: .75rem;
+	font-size: 1rem;
+	border-right: var(--font-color) 1px solid;
+}
+
+.realProcess .other{
+	float: left;
+	height: 3rem;
+	margin: 0 1rem;
+	padding: .75rem;
+	font-size: 1rem;
+}
+
+.realContainer .tips{
+	text-indent: 0;
+}
+
 footer{
+	margin: 0 auto ;
 	margin-top: 2rem;
 	text-align: center;
+	padding: 2rem 0;
+	padding-bottom: 1.25rem;
+	width: 36rem;
+	border-top: var(--font-color) 1px solid;
 }
 
 footer a{

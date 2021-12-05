@@ -40,7 +40,7 @@
 				<div class="process" v-for="(pid,index) in testCase_pid">
 					<span>第 {{index+1}} 个进程 | </span>
 					<span> 进程标识 ( Pid ) </span>
-					<span><input type="number" name="pid" id="pid" v-model="pid" /></span>
+					<span><input type="number" name="pid" id="pid" v-model="testCase_pid[index]" /></span>
 					<span> 进程名称 </span>
 					<span><input type="text" name="name" id="name" v-model="testCase_name[index]" /></span>
 					<span> 进程到达时间 </span>
@@ -119,18 +119,47 @@
 				<div class="realContainer" v-show="mainObj.res">
 					<div class="process">
 						<span>当前时间帧</span>
-						<span><input type="number" name="rpt" id="rpt" v-model="rp_time" /></span>
+						<span><input type="number" @input="initRP" min="0" name="rpt" id="rpt"
+								v-model="rp_time" /></span>
 					</div>
 					<div class="realProcess" v-for="(item,index) in display_rp.pid">
-						<div class="rpid">
-							<span>Process ID {{item}}</span>
+						<div class="head">
+							<div class="rpid">
+								<span class="pre">Process ID</span>
+								<span class="data">{{item}}</span>
+							</div>
+							<div class="rpname">
+								<span class="pre">Process Name</span>
+								<span class="data">{{display_rp.name[index]}}</span>
+							</div>
+							<div class="rpstatus">
+								<span class="pre">Process Status</span>
+								<span class="data">{{display_rp.status[index]??'ended'}}</span>
+							</div>
 						</div>
-						<div class="rpname">
-							<span>Process Name {{display_rp.name[index]}}</span>
+						<div class="connect">
+							<div class="next">
+								<span class="pre">Next pName</span>
+								<span class="data" v-show="display_rp.status[index] == 'running'">{{display_rp.connect.next}}</span>
+								<span class="data" v-show="display_rp.status[index] != 'running'">Not Running</span>
+							</div>
+							<div class="last">
+								<span class="pre">Last pName</span>
+								<span class="data" v-show="display_rp.status[index] == 'running'">{{display_rp.connect.last}}</span>
+								<span class="data" v-show="display_rp.status[index] != 'running'">Not Running</span>
+							</div>
 						</div>
-						<div class="rpstatus">
-							<span>Process Status {{handleRPStatus(index)}}</span>
+						<div class="other">
+							<span>CPU 寄存器、内存管理信息、I/O 状态信息、其他信息</span>
 						</div>
+					</div>
+					<div class="tips" v-show="this.isShowTips">
+						<span><b>进程调度仿真信息提示</b></span>
+						<span>1.每一个框体对应着一个虚拟的进程控制块（ PCB ），本实验中与其中的Cpu寄存器等其他信息无关，便不予模拟。</span>
+						<span>2.修改进程设置极有可能会使算法得到一个新的结果。所以在修改信息后，请再次点击对应调度算法的按钮，以得到新的结果。</span>
+						<span>3.本实验中的时间概念为时间帧（包括仿真、进程信息），不具体到精确时间，实验情况均视为理想情况。当然，时间帧可以为分数。</span>
+						<span>4.在仿真实验中,应当参考上部分的表项，确定进程仿真模拟的时间上下界，脱离观测范围的探索没有意义（起始已经设为0帧）。</span>
+						<span>5.仿真实验的进程控制块的排列顺序以进程的完成顺序排列（先来在上）。</span>
 					</div>
 				</div>
 			</div>
@@ -155,7 +184,7 @@
 					<a target="_blank"
 						href="https://github.com/BH-BIGDATA-Radical-Team/OperaSys-Exp/blob/main/LICENSE">MIT
 						Lincense</a></strong></span><br>
-			<span>制作于中国吉林，北华大学</span><br>
+			<span>制作于 中国 北华大学</span><br>
 			<span>Made in Beihua University, Jilin Province in China</span>
 		</footer>
 	</body>

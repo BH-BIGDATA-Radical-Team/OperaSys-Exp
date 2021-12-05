@@ -211,6 +211,7 @@ class DynamicPriority {
 			b[2] = this.t_service[i]
 			b[3] = false
 			b[4] = prio[i]
+			b.push(this.pid[i])
 			arr[i] = b
 		}
 
@@ -233,6 +234,7 @@ class DynamicPriority {
 					arr[0][4] = 9999999
 					this.finishArray.push({
 						name: arr[0][0],
+						pid: arr[0][5],
 						time: [(k == 0 ? arr[0][1] : this.t_finish[k - 1]), b[1] + (k == 0 ? arr[0][1] :
 							this.t_finish[k - 1])]
 					})
