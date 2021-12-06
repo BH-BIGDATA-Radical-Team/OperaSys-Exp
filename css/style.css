@@ -195,6 +195,7 @@ div.opreations p{
 
 .realContainer{
 	width: 80%;
+	min-width: 1140px;
 	margin: 2rem auto;
 }
 
@@ -202,7 +203,6 @@ div.opreations p{
 	height: 4.5rem;
 	margin: 1rem;
 	padding: .5rem 1rem;
-	min-width: 1140px;
 	border: var(--font-color) 1px solid;
 	font-family: "lucida console";
 }
